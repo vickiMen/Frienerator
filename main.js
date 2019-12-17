@@ -1,10 +1,10 @@
 const os = require('os')
 
 
-const text = 'efrat is awesome (ignore this)'
-text.replace(/\(\)/, '')
+// const text = 'efrat is awesome (ignore this)'
+// text.replace(/\(\)/, '')
 
-console.log(text)
+// console.log(text)
 
 
 
