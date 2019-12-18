@@ -24,9 +24,12 @@ const checkDuplicatedWords = async function(searchedWord){
 const getTranscript = (videoIds) => {
     videoIds.forEach( v => {
         const searchedWord = transcript(v)
-        checkDuplicatedWords(searchedWord)
-        new searchedWord(transcript(v))
+        checkDuplicatedWords(searchedWord) //save to DB
     })
+}
+
+const selectRandomEpisode = function(number){
+    const x = Math.floor(Math.random() * number)
 }
 
 
@@ -73,6 +76,16 @@ router.get('/getVideo/:sentence', (req, res) => {
     
 
     // 5. Get video part for each word (Efrat's part)
+    const desiredWords = []
+    wordsToLookUpArr.forEach( async word => {
+        const desiredWord = await searchedWords.findOne({
+            word: word
+        })
+        desiredWords.push(desiredWord.matchedEpisodes[selectRandomEpisode(desiredWord.matchedEpisodes.length)])   
+    })
+
+    generateVideo(desiredWords)
+    
     res.end()
 })
 
