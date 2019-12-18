@@ -24,7 +24,7 @@ const retrieveOutputLink = function (id){
 
 
 
-const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13", script: null }, { ID: "TjPhzgxe3L0", start: '00:00:50.15', duration: "00:00:07.13", script: null }]
+const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13", script: null}, { ID: "TjPhzgxe3L0", start: '00:00:50.15', duration: "00:00:07.13", script: null}]
 
 const videosBashToCut = IdToCut.map(i => {
     return {
@@ -43,23 +43,21 @@ IdToCut.forEach(i => {
     
 })
 
+let cutVideos = []
 
 fs.readdirSync(downloadFolder).forEach((file, index) =>{
     let script = (fs.readFileSync(`${downloadFolder}/${file}`,'utf8'))
-    IdToCut[index].script = script
-    // updateOutput(IdToCut[index].ID, script)
-    console.log(IdToCut)
+    let scriptNoWhiteSpace = script.replace(/\\n$/g, "")
+    // console.log(script)
+    IdToCut[index].script = scriptNoWhiteSpace.trim()
+    // console.log(IdToCut)
+    
 })
 
-
-// const videosBashToConcat = videosBashToCut.map(output =>
-//     `ffmpeg -ss ${output.start} -i "${output.url}" -t ${output.duration} F${fileCounter++}.mp4;`
-// )
-
-
-
-
-
+cutVideos =  IdToCut.map((video, index) =>
+        `ffmpeg -ss ${video.start} -i "${video.script}" -t ${video.duration} videoCut${index}.mp4;`
+)
+console.log(cutVideos)
 
 const port = 8001
 app.listen(port, function () {
