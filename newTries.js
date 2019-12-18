@@ -83,7 +83,7 @@ filesToConcat.forEach(i => {
     let command = `ffmpeg -i ${i}.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts ${i}.ts;`
     filesToIntermediate.push(command)
     filesWithTSExtension.push(`${i}.ts`)
-    execSync(command, {stdio: 'inherit', cwd: downloadFolder})
+    // execSync(command, {stdio: 'inherit', cwd: downloadFolder})
 })
 
 // console.log(filesToIntermediate)
@@ -111,12 +111,15 @@ let lastConcat = concatThis.join("")
 let lastConcatCommand = `ffmpeg -i "concat:${lastConcat}" -c copy -bsf:a aac_adtstoasc Final${videoCounter}.mp4`
 // console.log(lastConcatCommand)
 
-// const concateAll = function(){
+
     let finalFullConcatCommand = filesToIntermediate.join("") + lastConcatCommand
-// }
+
 console.log(finalFullConcatCommand)
 
-
+const executeMe = function(command){
+    execSync(command, {stdio: 'inherit', cwd: downloadFolder})
+}
+executeMe(finalFullConcatCommand)
 // execSync(command, {stdio: 'inherit', cwd: downloadFolder})
 // ffmpeg -i "concat:intermediate1.ts|intermediate2.ts" -c copy -bsf:a aac_adtstoasc [VIDEO_OUTPUT_NAME].mp4
 
