@@ -21,7 +21,7 @@ const IdToCut = [{ ID: "1-7ABIM2qjU", start: '00:00:40.15', duration: "00:00:05.
 const videosBashToCut = IdToCut.map(i => {
     return {
         url: `https://www.youtube.com/watch?v=${i.ID}`,
-        command: `youtube-dl -g https://www.youtube.com/watch?v=${i.ID} -f best`,
+        command: `youtube-dl -g https://www.youtube.com/watch?v=${i.ID} -f best ;`,
         start: i.start,
         duration: i.duration
     }
@@ -32,14 +32,14 @@ const videosBashToCut = IdToCut.map(i => {
 
 // writing a filestream to the bash
 const bash1stCommand = fs.createWriteStream('./friends-bash.sh', { encoding: "utf8" })
-bash1stCommand.write(videosBashToCut[0].command)
-// videosBashToCut.forEach((originalVideoToCut, index) => {
-//     bash1stCommand.write(originalVideoToCut.command)
-//     bash1stCommand.write('\n')
-//     if (index === videosBashToCut.length - 1) {
-//         bash1stCommand.end()
-//     }
-// })
+// bash1stCommand.write(videosBashToCut[0].command)
+videosBashToCut.forEach((originalVideoToCut, index) => {
+    bash1stCommand.write(originalVideoToCut.command)
+    bash1stCommand.write('\n')
+    if (index === videosBashToCut.length - 1) {
+        bash1stCommand.end()
+    }
+})
 
 // console.log(videosBashToCut)
 //returns a bash command of cutting instructions
@@ -65,6 +65,17 @@ const videosBashToConcat = videosBashToCut.map(output =>
 
 
 // exec command
+exec("./friends-bash.sh", { encoding: "utf8" }, (err, stdout, stderr) => {
+    if (err){
+        console.error(stderr)
+        throw err
+    }
+    let blabla = stdout
+    console.log(blabla)
+})
+
+
+
 // exec('bash', function (err, stdout, stderr) {
 //     if (err) {
 //         console.error('stderr', stderr);
@@ -92,21 +103,21 @@ const videosBashToConcat = videosBashToCut.map(output =>
     // })
 // })
 
-execFile("bash", ["friends-bash.sh"], async (error, stdout, stderr) => {
-    try {
-     const bla = await stdout 
-     console.log(bla)
-    } catch (error) {
-        console.error('stderr', stderr);
-        throw error;
-    }
+// execFile("bash", ["friends-bash.sh"], async (error, stdout, stderr) => {
+//     try {
+//      const bla = await stdout 
+//      console.log(bla)
+//     } catch (error) {
+//         console.error('stderr', stderr);
+//         throw error;
+//     }
     // if (error) {
     
     // }
     // console.log(stdout)
     // let blab = stdout.replace(/\s/g, "");
     // console.log(blab)
-})
+// })
 
 // console.log(child)
 
