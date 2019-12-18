@@ -5,7 +5,19 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const api = require('./server/routes/api')
 const mongoose = require('mongoose')
-/*NEED UPDATED URL FROM VICKI!*/mongoose.connect('mongodb://localhost/weatherDB', { useNewUrlParser: true})
+
+
+const pass = 'T23Cd93@g62EmrQ'
+
+mongoose.connect(`mongodb://vicki:${encodeURIComponent(pass)}@ds127506.mlab.com:27506/heroku_drzf9z0f`, { useNewUrlParser: true}, (err)=>
+    {
+        if(err) {
+            console.log('Some problem with the connection ' +err);
+        } else {
+            console.log('The Mongoose connection is ready');
+        }
+    })
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
