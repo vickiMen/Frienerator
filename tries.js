@@ -10,7 +10,11 @@ const router = express.Router()
 const fs = require('fs');
 const execFile = require('child_process').execFile;
 const exec = require('child_process').exec;
+const shell = require("shelljs")
+const youtubeDL = require("youtube-dl")
+
 //all the IDs to cut for the request
+
 const IdToCut = [{ ID: "1-7ABIM2qjU", start: '00:00:40.15', duration: "00:00:05.13" }, { ID: "I8ZIErShjw0", start: '00:00:50.15', duration: "00:00:07.13" }]
 
 // const videoDowload = `youtube-dl -g https://www.youtube.com/watch?v=${i} -f best;`
@@ -33,6 +37,7 @@ const videosBashToCut = IdToCut.map(i => {
 // writing a filestream to the bash
 const bash1stCommand = fs.createWriteStream('./friends-bash.sh', { encoding: "utf8" })
 // bash1stCommand.write(videosBashToCut[0].command)
+
 videosBashToCut.forEach((originalVideoToCut, index) => {
     bash1stCommand.write(originalVideoToCut.command)
     bash1stCommand.write('\n')
@@ -64,8 +69,9 @@ const videosBashToConcat = videosBashToCut.map(output =>
 
 
 
+
 // exec command
-exec("./friends-bash.sh", { encoding: "utf8" }, (err, stdout, stderr) => {
+execFile("bash", ["friends-bash.sh"], { encoding: "utf8" }, (err, stdout, stderr) => {
     if (err){
         console.error(stderr)
         throw err
@@ -84,6 +90,7 @@ exec("./friends-bash.sh", { encoding: "utf8" }, (err, stdout, stderr) => {
 //     let blab = stdout.replace(/\s/g, "");
 //     console.log(blab)
 // })
+
 // const child = execFile("bash", ["friends-bash.sh"], async (error, stdout, stderr) => {
 //     if (error) {
 //         console.error('stderr', stderr);
