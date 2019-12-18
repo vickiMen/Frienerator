@@ -11,31 +11,19 @@ const downloader = require('youtube-dl/lib/downloader')
 
 const downloadFolder = "./videoLinks"
 let videoCounter = 0
-// let videofileName = 
-// let videoFileCounter = "v" + videoCounter
+
+//array that saves the Id of the videos to cut, the start time and the duration. later on also the script
+const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13", script: null}, { ID: "TjPhzgxe3L0", start: '00:00:50.15', duration: "00:00:07.13", script: null}]
 
 
-
+//function that creates a new text file with the output of youtube-dl inside
 const retrieveOutputLink = function (id){
     let command = `youtube-dl -g "https://www.youtube.com/watch?v=${id}" -f best > Video${videoCounter}.txt;`
     const output = execSync(command, {stdio: 'inherit', cwd: downloadFolder})
-    // console.log(output)
 }
 
 
-
-const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13", script: null}, { ID: "TjPhzgxe3L0", start: '00:00:50.15', duration: "00:00:07.13", script: null}]
-
-const videosBashToCut = IdToCut.map(i => {
-    return {
-        url: `https://www.youtube.com/watch?v=${i.ID}`,
-        command: `youtube-dl -g https://www.youtube.com/watch?v=${i.ID} -f best ;`,
-        start: i.start,
-        duration: i.duration,
-        script: i.script
-    }
-})
-
+//calling the function on each of the items in the array to cut
 IdToCut.forEach(i => {
     videoCounter++
     // console.log(videoFileCounter)
@@ -43,8 +31,11 @@ IdToCut.forEach(i => {
     
 })
 
-let cutVideos = []
+let videosThatAreCut = []
 
+
+
+//reading through the directory "videoLinks" and through each file, setting the item's script to the output that we got from the youtube-dl function.
 fs.readdirSync(downloadFolder).forEach((file, index) =>{
     let script = (fs.readFileSync(`${downloadFolder}/${file}`,'utf8'))
     let scriptNoWhiteSpace = script.replace(/\\n$/g, "")
@@ -54,10 +45,22 @@ fs.readdirSync(downloadFolder).forEach((file, index) =>{
     
 })
 
-cutVideos =  IdToCut.map((video, index) =>
-        `ffmpeg -ss ${video.start} -i "${video.script}" -t ${video.duration} videoCut${index}.mp4;`
-)
-console.log(cutVideos)
+//function that cuts the videos in the correct timing
+const cutVideos = function(video){
+    let command = `ffmpeg -ss ${video.start} -i "${video.script}" -t ${video.duration} Video${videoCounter}.mp4;`
+    execSync(command, {stdio: 'inherit', cwd: downloadFolder})
+}
+
+//calling the funtion that cuts the videos
+IdToCut.forEach(video => {
+    cutVideos(video)
+    videoCounter++
+})
+
+
+
+
+
 
 const port = 8001
 app.listen(port, function () {
