@@ -15,7 +15,6 @@ app.use(express.static(path.join(__dirname, 'node_modules')))
 const PORT = 8080
 app.listen(process.env.PORT || PORT)
 
-
 const scriptsFolder = './scripts3/Friends_Analysis/transcripts_friends/season_all'
 
 fs.readdirSync(scriptsFolder).forEach(file => {
@@ -33,27 +32,29 @@ fs.readdirSync(scriptsFolder).forEach(file => {
         episodeNum = fileName.slice(1)
     }
 
-    const e = (fs.readFileSync(`${scriptsFolder}/${file}`,'utf8'))
+    const episodeData = (fs.readFileSync(`${scriptsFolder}/${file}`,'utf8'))
 
-    let episodeName = e.match(/(The One .*)|(The Last One)/) //episode name
-    let e1 = e.replace(/\(.*\)/gm, '') //director's comments
-    let e2 = e1.replace(/(([A-Z][a-z]+\.)\s([A-Z][a-z]+\:))/gm, '') //character name with 2words
-    let e3 = e2.replace(/([A-Z][a-z]+)\:/gm, '') //character name
-    let e4 = e3.replace(/\[.*\]/gm, '') //scene desc.
-    let e5 = e4.replace(/(Written by\: .+)/gm, '') //written by
-    let e6 = e5.replace(/(Transcribed by\: .+)/gm, '') //transcribed by
-    let e7 = e6.replace(/((Ending|Closing) Credits)/gm, '')  //ending credits
-    let e8 = e7.replace(/(End)/gm, '')  //ending credits
-    let e9 = e8.replace(/Commercial Break/gm, '')  // commercial break
-    let e10 = e9.replace(/Opening Credits/gm, '') //opening credits
-    let e11 = e10.replace(/\n/gm, '') //new line
-    let e12 = e11.replace(/\r/gm, '') //carriage-return
+    let episodeName = episodeData.match(/(The One .*)|(The Last One)/) //episode name
+    
+    let script = episodeData
+             script = script.replace(/\(.*\)/gm, '') // director's comments
+                            .replace(/(([A-Z][a-z]+\.)\s([A-Z][a-z]+\:))/gm, '') //char name 2 word 
+                            .replace(/([A-Z][a-z]+)\:/gm, '') //character name
+                            .replace(/\[.*\]/gm, '') // scene desc.
+                            .replace(/(Written by\: .+)/gm, '')
+                            .replace(/(Transcribed by\: .+)/gm, '')
+                            .replace(/((Ending|Closing) Credits)/gm, '')
+                            .replace(/(End)/gm, '')
+                            .replace(/Commercial Break/gm, '')
+                            .replace(/Opening Credits/gm, '')
+                            .replace(/\n/gm, '') //new line
+                            .replace(/\r/gm, '') //carriage-return
     
     const content = {
         season: seasonNum,
         episode: episodeNum,
         name: episodeName,
-        script: e12
+        script: script
     }
     
     fs.writeFileSync(`./scripts3/scriptsOutput/${file}`, JSON.stringify(content))
@@ -61,6 +62,7 @@ fs.readdirSync(scriptsFolder).forEach(file => {
 })
 
 mongoose.connect('mongodb://localhost/Friends', {useNewUrlParser: true})
+
 
 // const episodeFriends = require('./episodes')
 
