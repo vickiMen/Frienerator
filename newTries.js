@@ -10,7 +10,11 @@ const downloader = require('youtube-dl/lib/downloader')
 
 
 const downloadFolder = "./videoLinks"
-videoCounter = 0
+let videoCounter = 0
+// let videofileName = 
+// let videoFileCounter = "v" + videoCounter
+
+
 
 const retrieveOutputLink = function (id){
     let command = `youtube-dl -g "https://www.youtube.com/watch?v=${id}" -f best > Video${videoCounter}.txt;`
@@ -20,25 +24,37 @@ const retrieveOutputLink = function (id){
 
 
 
-const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13" }, { ID: "1-7ABIM2qjU", start: '00:00:50.15', duration: "00:00:07.13" }]
+const IdToCut = [{ ID: `I8ZIErShjw0`, start: '00:00:40.15', duration: "00:00:05.13", script: null }, { ID: "TjPhzgxe3L0", start: '00:00:50.15', duration: "00:00:07.13", script: null }]
 
 const videosBashToCut = IdToCut.map(i => {
     return {
         url: `https://www.youtube.com/watch?v=${i.ID}`,
         command: `youtube-dl -g https://www.youtube.com/watch?v=${i.ID} -f best ;`,
         start: i.start,
-        duration: i.duration
+        duration: i.duration,
+        script: i.script
     }
 })
 
 IdToCut.forEach(i => {
-    console.log(i.ID)
-    retrieveOutputLink(i.ID)
     videoCounter++
+    // console.log(videoFileCounter)
+    retrieveOutputLink(i.ID)
+    
 })
 
 
+fs.readdirSync(downloadFolder).forEach((file, index) =>{
+    let script = (fs.readFileSync(`${downloadFolder}/${file}`,'utf8'))
+    IdToCut[index].script = script
+    // updateOutput(IdToCut[index].ID, script)
+    console.log(IdToCut)
+})
 
+
+// const videosBashToConcat = videosBashToCut.map(output =>
+//     `ffmpeg -ss ${output.start} -i "${output.url}" -t ${output.duration} F${fileCounter++}.mp4;`
+// )
 
 
 
