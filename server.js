@@ -10,7 +10,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 // app.use(express.static(path.join(__dirname, 'dist')))
 app.use(express.static(path.join(__dirname, 'node_modules')))
-// app.use( '/', api )
+app.use( '/', api )
 
 const PORT = 8080
 app.listen(process.env.PORT || PORT)
@@ -56,12 +56,15 @@ fs.readdirSync(scriptsFolder).forEach(file => {
         name: episodeName,
         script: script
     }
-    
+
     fs.writeFileSync(`./scripts3/scriptsOutput/${file}`, JSON.stringify(content))
 
 })
 
 mongoose.connect('mongodb://localhost/Friends', {useNewUrlParser: true})
+
+//TODO : organize code in a good structure, insert normalization into an outer function
+//TODO : modify regexes, should catch more cases
 
 
 // const episodeFriends = require('./episodes')
