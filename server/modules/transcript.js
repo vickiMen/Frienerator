@@ -81,6 +81,6 @@ const retrieveTimeStamppData = function(youtubeVideoID){
 }
 
 
-retrieveTimeStamppData(`R09b09hNDmo`)
+// retrieveTimeStamppData(youtubeVideoID)
 
 module.exports = retrieveTimeStamppData

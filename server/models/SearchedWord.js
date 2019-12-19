@@ -16,4 +16,5 @@ const SearchedWordSchema = new Schema({
 })
 
 const SearchedWord = mongoose.model('SearchedWord', SearchedWordSchema)
+
 module.exports = SearchedWord
